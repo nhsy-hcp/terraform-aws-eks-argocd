@@ -13,8 +13,6 @@ resource "helm_release" "argocd" {
 
   timeout = var.argocd_timeout_seconds
 
-  values = [file("manifests/argocd-values.yaml")]
-
   set_sensitive {
     name  = "configs.secret.argocdServerAdminPassword"
     value = var.argocd_admin_password == "" ? "" : bcrypt(random_string.argocd_admin_password.result)
@@ -23,6 +21,44 @@ resource "helm_release" "argocd" {
   set {
     name  = "configs.params.server.insecure"
     value = var.argocd_insecure == false ? false : true
+  }
+  set {
+    name  = "redis-ha.enabled"
+    value = true
+  }
+  set {
+    name  = "controller.replicas"
+    value = 1
+  }
+  set {
+    name  = "server.autoscaling.enabled"
+    value = true
+  }
+  set {
+    name  = "server.autoscaling.minReplicas"
+    value = 2
+  }
+  set {
+    name  = "repoServer.autoscaling.enabled"
+    value = true
+  }
+  set {
+    name  = "repoServer.autoscaling.minReplicas"
+    value = 2
+  }
+  set {
+    name  = "applicationSet.replicaCount"
+    value = 2
+  }
+  set {
+    name  = "dex.enabled"
+    value = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      set_sensitive
+    ]
   }
 
   depends_on = [
@@ -93,7 +129,7 @@ resource "kubernetes_ingress_v1" "argocd" {
               }
             }
           }
-          path     = "/"
+          path      = "/"
           path_type = "Prefix"
 
         }
@@ -106,7 +142,7 @@ resource "kubernetes_ingress_v1" "argocd" {
               }
             }
           }
-          path     = "/"
+          path      = "/"
           path_type = "Prefix"
         }
       }
