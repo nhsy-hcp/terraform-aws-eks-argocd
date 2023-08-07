@@ -72,11 +72,6 @@ variable "argocd_chart_version" {
   type    = string
   default = "5.42.2"
 }
-variable "argocd_admin_password" {
-  type    = string
-  default = "secret"
-  # TODO: use random password
-}
 
 variable "argocd_namespace" {
   type    = string
@@ -95,5 +90,4 @@ variable "argocd_timeout_seconds" {
 
 variable "domain" {
   type    = string
-  default = "narish-samplay.aws.sbx.hashicorpdemo.com"
 }

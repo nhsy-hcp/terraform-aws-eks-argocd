@@ -4,12 +4,10 @@ data "aws_route53_zone" "default" {
 }
 
 resource "aws_route53_record" "argocd" {
-  //for_each = var.argocd_alb_fqdn != null ? toset([var.argocd_alb_fqdn]) : toset([])
-
   zone_id = data.aws_route53_zone.default.zone_id
   name    = "argocd"
   type    = "CNAME"
-  ttl     = 60
+  ttl     = 300
   records = [
     local.alb_fqdn
   ]
@@ -27,7 +25,7 @@ resource "aws_route53_record" "acm" {
   allow_overwrite = true
   name            = each.value.name
   records         = [each.value.record]
-  ttl             = 60
+  ttl             = 300
   type            = each.value.type
   zone_id         = data.aws_route53_zone.default.zone_id
 }
