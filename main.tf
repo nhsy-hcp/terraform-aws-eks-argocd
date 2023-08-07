@@ -1,6 +1,6 @@
 locals {
-  argocd_fqdn = "argocd.${var.domain}"
-  alb_fqdn    = kubernetes_ingress_v1.argocd.status.0.load_balancer.0.ingress.0.hostname
+  argocd_fqdn  = "argocd.${var.domain}"
+  alb_hostname = kubernetes_ingress_v1.argocd.status.0.load_balancer.0.ingress.0.hostname
 }
 
 data "aws_availability_zones" "available" {}

@@ -89,5 +89,5 @@ variable "argocd_timeout_seconds" {
 }
 
 variable "domain" {
-  type    = string
+  type = string
 }

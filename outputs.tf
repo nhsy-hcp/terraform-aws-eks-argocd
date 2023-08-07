@@ -48,6 +48,6 @@ output "acm_certificate_arn" {
   value = aws_acm_certificate.default.arn
 }
 
-output "alb_fqdn" {
-  value = local.alb_fqdn
+output "alb_hostname" {
+  value = local.alb_hostname
 }

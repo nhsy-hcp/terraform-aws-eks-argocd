@@ -9,7 +9,7 @@ resource "aws_route53_record" "argocd" {
   type    = "CNAME"
   ttl     = 300
   records = [
-    local.alb_fqdn
+    local.alb_hostname
   ]
 }
 
