@@ -3,6 +3,7 @@
 **/.terraform/*
 **/.terraform.lock.hcl
 **/.terragrunt-cache/*
+.terraform/*
 
 # Local dev files
 .config
@@ -19,7 +20,7 @@
 # Terraform plan
 *.plan
 
-# Terrafaor local tfvars
+# Terraform local tfvars
 terraform.tfvars
 
 .DS_Store
