@@ -36,6 +36,10 @@ output "eks_cluster_kube_context" {
   value = "arn:aws:eks:${var.region}:${var.aws_account_id}:cluster/${var.eks_cluster_name}"
 }
 
+output "argocd_fqdn" {
+  value = local.argocd_fqdn
+}
+
 output "argocd_url" {
   value = "https://${local.argocd_fqdn}"
 }

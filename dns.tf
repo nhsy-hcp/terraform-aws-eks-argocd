@@ -3,16 +3,6 @@ data "aws_route53_zone" "default" {
   private_zone = false
 }
 
-resource "aws_route53_record" "argocd" {
-  zone_id = data.aws_route53_zone.default.zone_id
-  name    = "argocd"
-  type    = "CNAME"
-  ttl     = 300
-  records = [
-    local.alb_hostname
-  ]
-}
-
 resource "aws_route53_record" "acm" {
   for_each = {
     for dvo in aws_acm_certificate.default.domain_validation_options : dvo.domain_name => {
@@ -33,4 +23,14 @@ resource "aws_route53_record" "acm" {
 resource "aws_acm_certificate_validation" "default" {
   certificate_arn         = aws_acm_certificate.default.arn
   validation_record_fqdns = [for record in aws_route53_record.acm : record.fqdn]
+}
+
+resource "aws_route53_record" "argocd" {
+  zone_id = data.aws_route53_zone.default.zone_id
+  name    = "argocd"
+  type    = "CNAME"
+  ttl     = 300
+  records = [
+    local.alb_hostname
+  ]
 }

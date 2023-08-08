@@ -5,12 +5,9 @@ locals {
 
 data "aws_availability_zones" "available" {}
 
-####
-# Get management IP for control plane access
-###
-
+# Get Public IP for EKS control plane access
 data "http" "management_ip" {
-  url = "https://ipinfo.io/ip"
+  url = "https://checkip.amazonaws.com"
 
   lifecycle {
     postcondition {

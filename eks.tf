@@ -1,7 +1,7 @@
 module "eks" {
 
   source  = "terraform-aws-modules/eks/aws"
-  version = "19.13.0"
+  version = "19.16.0"
 
   cluster_name    = var.eks_cluster_name
   cluster_version = var.eks_k8s_version
@@ -82,8 +82,4 @@ module "ebs_csi_irsa_role_eks" {
       namespace_service_accounts = ["kube-system:ebs-csi-controller-sa"]
     }
   }
-
-  #  depends_on = [
-  #    module.eks_admin_cluster.cluster_endpoint
-  #  ]
 }
