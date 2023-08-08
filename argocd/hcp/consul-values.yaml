@@ -1,0 +1,55 @@
+global:
+  name: consul
+  datacenter: dc1
+
+  tls:
+    enabled: true
+
+  peering:
+    enabled: false
+
+  acls:
+    manageSystemACLs: true
+
+connectInject:
+  enabled: true
+
+meshGateway:
+  enabled: false
+
+ui:
+  enabled: true
+#  service:
+#    enabled: true
+#    type: LoadBalancer
+#    annotations: | # required for AWS Load Balancer Controller
+#      service.beta.kubernetes.io/aws-load-balancer-name: "eks-consul"
+#      service.beta.kubernetes.io/aws-load-balancer-type: "external"
+#      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+#      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+  service:
+    enabled: true
+    type: ClusterIP
+#    annotations: | # required for AWS Load Balancer Controller
+#      service.beta.kubernetes.io/aws-load-balancer-name: "eks-consul"
+#      service.beta.kubernetes.io/aws-load-balancer-type: "external"
+#      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+#      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+
+  ingress:
+    enabled: true
+    pathType: Prefix
+    hosts:
+      - host: consul.narish-samplay.aws.sbx.hashicorpdemo.com
+        paths:
+          - /
+    tls:
+      - hosts:
+        - consul.narish-samplay.aws.sbx.hashicorpdemo.com
+    annotations: |
+      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:eu-west-1:188030499835:certificate/33b114f7-ce5b-432f-9d88-4ef04522cb98"
+      alb.ingress.kubernetes.io/listen-ports: "[{\"HTTPS\":443}]"
+      alb.ingress.kubernetes.io/load-balancer-name: "eks-consul"
+      alb.ingress.kubernetes.io/scheme: "internet-facing"
+      alb.ingress.kubernetes.io/target-type: "ip"
+      kubernetes.io/ingress.class: "alb"

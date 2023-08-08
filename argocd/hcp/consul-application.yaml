@@ -1,0 +1,41 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: consul
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+    - CreateNamespace=true
+    - RespectIgnoreDifferences=true
+
+  ignoreDifferences:
+    - group: "batch"
+      kind: "Job"
+
+  project: consul
+
+  sources:
+    # Deploy Consul Helm chart
+    - chart: consul
+      repoURL: https://helm.releases.hashicorp.com
+      targetRevision: 1.1.3
+      helm:
+        releaseName: consul
+        valueFiles:
+          - $values/argocd/hcp/consul-values.yaml
+
+    # Use values from demo repository for Helm chart
+    - repoURL: 'https://github.com/nhsy-hcp/terraform-aws-eks-argocd.git'
+      targetRevision: argocd
+      ref: values
+
+  # Deploy to the consul namespace in same cluster
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: consul
