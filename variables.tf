@@ -11,12 +11,12 @@ variable "vpc_cidr" {
 
 variable "eks_k8s_version" {
   type    = string
-  default = "1.25"
+  default = "1.26"
 }
 
 variable "eks_cluster_name" {
   type    = string
-  default = "eks"
+  default = "eks-hcp"
 }
 
 # Managed nodes group parameters
@@ -36,7 +36,7 @@ variable "eks_node_workers" {
 
 variable "eks_node_instance_types" {
   type    = list(string)
-  default = ["t3.small", "t2.small"]
+  default = ["m5.large", "m4.large"]
 }
 
 variable "eks_node_capacity_type" {
@@ -90,4 +90,9 @@ variable "argocd_timeout_seconds" {
 
 variable "domain" {
   type = string
+}
+
+variable "shared_alb_name" {
+  type    = string
+  default = "eks-hcp-shared"
 }

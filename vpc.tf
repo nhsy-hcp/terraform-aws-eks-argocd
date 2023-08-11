@@ -1,12 +1,10 @@
 module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
-  version = "4.0.1"
+  version = "5.1.1"
 
-  name = "eks-vpc"
-
+  name = "${var.eks_cluster_name}-vpc"
   cidr = var.vpc_cidr
-
-  azs = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs  = slice(data.aws_availability_zones.available.names, 0, 3)
 
   private_subnets = [
     cidrsubnet(var.vpc_cidr, 8, 0),

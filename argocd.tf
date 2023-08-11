@@ -64,62 +64,6 @@ module "argocd" {
   ]
 }
 
-#
-#resource "helm_release" "argocd" {
-#  namespace        = var.argocd_namespace
-#  create_namespace = true
-#  name             = var.argocd_release_name
-#  repository       = "https://argoproj.github.io/argo-helm"
-#  chart            = "argo-cd"
-#  version          = var.argocd_chart_version
-#
-#  timeout = var.argocd_timeout_seconds
-#
-#  set_sensitive {
-#    name  = "configs.secret.argocdServerAdminPassword"
-#    value = bcrypt(random_string.argocd_admin_password.result)
-#  }
-#
-#  set {
-#    name  = "configs.params.server.insecure"
-#    value = var.argocd_insecure == false ? false : true
-#  }
-#  set {
-#    name  = "redis-ha.enabled"
-#    value = true
-#  }
-#  set {
-#    name  = "controller.replicas"
-#    value = 1
-#  }
-#  set {
-#    name  = "server.replicas"
-#    value = 2
-#  }
-#  set {
-#    name  = "repoServer.replicas"
-#    value = 2
-#  }
-#  set {
-#    name  = "applicationSet.replicaCount"
-#    value = 2
-#  }
-#  set {
-#    name  = "dex.enabled"
-#    value = false
-#  }
-#
-#  lifecycle {
-#    ignore_changes = [
-#      set_sensitive
-#    ]
-#  }
-#
-#  depends_on = [
-#    helm_release.alb
-#  ]
-#}
-#
 resource "kubernetes_service_v1" "argocd" {
   metadata {
     annotations = {
@@ -160,11 +104,12 @@ resource "kubernetes_ingress_v1" "argocd" {
       "alb.ingress.kubernetes.io/conditions.argocd-grpc" = <<-EOT
         [{"field":"http-header","httpHeaderConfig":{"httpHeaderName": "Content-Type", "values":["application/grpc"]}}]
         EOT
+      "alb.ingress.kubernetes.io/group.name"             = var.shared_alb_name
       "alb.ingress.kubernetes.io/listen-ports"           = "[{\"HTTPS\":443}]"
-      "alb.ingress.kubernetes.io/load-balancer-name"     = "eks-argocd"
+      "alb.ingress.kubernetes.io/load-balancer-name"     = var.shared_alb_name
       "alb.ingress.kubernetes.io/scheme"                 = "internet-facing"
       "alb.ingress.kubernetes.io/target-type"            = "ip"
-      "kubernetes.io/ingress.class" = "alb"
+      "kubernetes.io/ingress.class"                      = "alb"
     }
     name      = "argocd"
     namespace = "argocd"

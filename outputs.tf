@@ -5,8 +5,6 @@ output "region" {
   value       = var.region
 }
 
-#----- admin cluster ------
-
 output "eks_cluster_name" {
   description = "EKS cluster name"
   value       = module.eks.cluster_name
@@ -52,6 +50,18 @@ output "acm_certificate_arn" {
   value = aws_acm_certificate.default.arn
 }
 
-output "alb_hostname" {
-  value = local.alb_hostname
+output "shared_alb_hostname" {
+  value = local.shared_alb_hostname
+}
+
+output "echoserver_url" {
+  value = "https://${local.echoserver_fqdn}"
+}
+
+output "consul_url" {
+  value = "https://${local.consul_fqdn}"
+}
+
+output "vault_url" {
+  value = "https://${local.vault_fqdn}"
 }

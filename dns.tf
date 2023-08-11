@@ -29,8 +29,20 @@ resource "aws_route53_record" "argocd" {
   zone_id = data.aws_route53_zone.default.zone_id
   name    = "argocd"
   type    = "CNAME"
-  ttl     = 300
+  ttl     = 60
   records = [
-    local.alb_hostname
+    local.shared_alb_hostname
+  ]
+}
+
+resource "aws_route53_record" "apps" {
+  for_each = toset(["consul", "echoserver", "vault"])
+
+  zone_id = data.aws_route53_zone.default.zone_id
+  name    = each.value
+  type    = "CNAME"
+  ttl     = 60
+  records = [
+    local.shared_alb_hostname
   ]
 }

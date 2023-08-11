@@ -7,11 +7,11 @@ metadata:
   - resources-finalizer.argocd.argoproj.io
 spec:
   syncPolicy:
-    automated:
-      prune: true
-      selfHeal: true
+#    automated:
+#      prune: true
+#      selfHeal: true
     syncOptions:
-    - CreateNamespace=true
+    - CreateNamespace=false
 
   project: vault
 
@@ -23,7 +23,7 @@ spec:
       helm:
         releaseName: vault
         valueFiles:
-          - $values/argocd/hcp/vault-values.yaml
+          - $values/files/vault-values.yaml
 
     # Use values from demo repository for Helm chart
     - repoURL: 'https://github.com/nhsy-hcp/terraform-aws-eks-argocd.git'

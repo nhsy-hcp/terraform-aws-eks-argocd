@@ -27,3 +27,6 @@ terraform.tfvars
 *.bak
 consul-license.yaml*
 consul-admin-cluster.tf
+
+vault-init.json
+files/vault-values.yaml

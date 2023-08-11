@@ -1,0 +1,4 @@
+aws_account_id = "<AWS_ACCOUNT_ID>"
+owner          = "example-owner"
+domain = "example.com"
+eks_node_instance_types = ["m5.large", "m4.large"]
