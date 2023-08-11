@@ -54,7 +54,7 @@ server:
     annotations: |
       alb.ingress.kubernetes.io/group.name: "eks-hcp-shared"
       alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
-      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:eu-west-1:188030499835:certificate/bb61a3e6-57a8-4bc3-ae51-9510fcd55e93"
+      alb.ingress.kubernetes.io/certificate-arn: "arn:aws:acm:eu-west-1:188030499835:certificate/5dcd7953-1d53-41e5-9184-65da6c6135e0"
       alb.ingress.kubernetes.io/healthcheck-path: "/v1/sys/health"
       alb.ingress.kubernetes.io/listen-ports: "[{\"HTTPS\":443}]"
       alb.ingress.kubernetes.io/success-codes: "200"
