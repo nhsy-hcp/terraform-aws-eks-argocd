@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: vault
+  name: waypoint
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io
@@ -11,28 +11,40 @@ spec:
 #      prune: true
 #      selfHeal: true
     syncOptions:
-    - CreateNamespace=false
+    - CreateNamespace=true
+    - RespectIgnoreDifferences=true
 
-  project: vault
+  ignoreDifferences:
+    - kind: "Secret"
+      name: "waypoint-runner-token"
+      jsonPointers:
+        - /data
+    - kind: "Secret"
+      name: "waypoint-server-token"
+      jsonPointers:
+        - /data
+
+  project: waypoint
 
   sources:
-    # Deploy Vault Helm chart
-    - chart: vault
+    # Deploy Waypoint Helm chart
+    - chart: waypoint
       repoURL: https://helm.releases.hashicorp.com
-      targetRevision: 0.25.0
+      targetRevision: 0.1.21
       helm:
-        releaseName: vault
+        releaseName: waypoint
         values: |
-          server:
+          ui:
+            service:
+              type: ClusterIP
             ingress:
               enabled: true
               annotations:
-                alb.ingress.kubernetes.io/group.name: "${alb_group_name}"
                 alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
                 alb.ingress.kubernetes.io/certificate-arn: "${certificate_arn}"
-                alb.ingress.kubernetes.io/healthcheck-path: "/v1/sys/health"
+                alb.ingress.kubernetes.io/group.name: "${alb_group_name}"
+                alb.ingress.kubernetes.io/healthcheck-path: "/"
                 alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
-                alb.ingress.kubernetes.io/success-codes: "200"
                 alb.ingress.kubernetes.io/target-type: "ip"
                 kubernetes.io/ingress.class: "alb"
               hosts:
@@ -40,17 +52,17 @@ spec:
                   paths: [/]
               tls:
                 - hosts:
-                  - ${host}
+                  - waypoint.${host}
 
-        valueFiles:
-          - $values/argocd/vault/vault-values.yaml
+#        valueFiles:
+#          - $values/argocd/vault/vault-values.yaml
 
-    # Use values from repository
-    - repoURL: 'https://github.com/nhsy-hcp/terraform-aws-eks-argocd.git'
-      targetRevision: dev
-      ref: values
+#    # Use values from repository
+#    - repoURL: 'https://github.com/nhsy-hcp/terraform-aws-eks-argocd.git'
+#      targetRevision: dev
+#      ref: values
 
   # Deploy to the vault namespace in same cluster
   destination:
     server: "https://kubernetes.default.svc"
-    namespace: vault
+    namespace: waypoint

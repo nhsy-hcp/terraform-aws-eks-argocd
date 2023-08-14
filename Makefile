@@ -39,7 +39,7 @@ clean:
 install-consul:
 	@kubectl apply -f argocd/consul/consul-project.yaml
 	@kubectl apply -f argocd/consul/consul-application.yaml
-	@argocd app sync consul-cluster
+	@argocd app sync consul
 
 uninstall-consul:
 #	-@helm uninstall vault -n vault
@@ -60,7 +60,7 @@ install-vault:
 #	@helm install vault hashicorp/vault -n vault --create-namespace --values=files/vault-values.yaml
 	@kubectl apply -f argocd/vault/vault-project.yaml
 	@kubectl apply -f argocd/vault/vault-application.yaml
-	@argocd app sync vault-cluster
+	@argocd app sync vault
 	@sleep 60
 	@scripts/10-vault-init.sh
 
@@ -69,6 +69,17 @@ uninstall-vault:
 	-@kubectl delete -f argocd/vault/vault-application.yaml
 	-@kubectl delete -f argocd/vault/vault-project.yaml
 	-@kubectl delete pvc -n vault --all
+
+install-waypoint:
+	@kubectl apply -f argocd/waypoint/waypoint-project.yaml
+	@kubectl apply -f argocd/waypoint/waypoint-application.yaml
+	@argocd app sync waypoint
+	@scripts/20-waypoint.sh
+
+uninstall-waypoint:
+	-@kubectl delete -f argocd/waypoint/waypoint-application.yaml
+	-@kubectl delete -f argocd/waypoint/waypoint-project.yaml
+	-@kubectl delete pvc -n waypoint --all
 
 logs-vault:
 	@kubectl logs -n vault vault-0 -c vault -f

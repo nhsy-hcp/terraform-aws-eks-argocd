@@ -65,3 +65,7 @@ output "consul_url" {
 output "vault_url" {
   value = "https://${local.vault_fqdn}"
 }
+
+output "waypoint_url" {
+  value = "https://${local.waypoint_fqdn}"
+}

@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: consul-cluster
+  name: consul
   namespace: argocd
   finalizers:
   - resources-finalizer.argocd.argoproj.io

@@ -44,3 +44,13 @@ resource "local_file" "vault_argocd_application" {
       host            = local.vault_fqdn
   })
 }
+
+resource "local_file" "waypoint_argocd_application" {
+  filename = "${path.root}/argocd/waypoint/waypoint-application.yaml"
+  content = templatefile("${path.root}/templates/waypoint-application-template.yaml",
+    {
+      alb_group_name  = var.shared_alb_name
+      certificate_arn = aws_acm_certificate.default.arn
+      host            = local.waypoint_fqdn
+  })
+}

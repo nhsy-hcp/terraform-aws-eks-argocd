@@ -36,7 +36,7 @@ resource "aws_route53_record" "argocd" {
 }
 
 resource "aws_route53_record" "apps" {
-  for_each = toset(["consul", "echoserver", "vault"])
+  for_each = toset(["consul", "echoserver", "waypoint", "vault"])
 
   zone_id = data.aws_route53_zone.default.zone_id
   name    = each.value
