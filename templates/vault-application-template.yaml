@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: vault-cluster
+  namespace: argocd
+  finalizers:
+  - resources-finalizer.argocd.argoproj.io
+spec:
+  syncPolicy:
+#    automated:
+#      prune: true
+#      selfHeal: true
+    syncOptions:
+    - CreateNamespace=false
+
+  project: vault
+
+  sources:
+    # Deploy Vault Helm chart
+    - chart: vault
+      repoURL: https://helm.releases.hashicorp.com
+      targetRevision: 0.25.0
+      helm:
+        releaseName: vault
+        values: |
+          server:
+            ingress:
+              enabled: true
+              annotations:
+                alb.ingress.kubernetes.io/group.name: "${alb_group_name}"
+                alb.ingress.kubernetes.io/backend-protocol: "HTTPS"
+                alb.ingress.kubernetes.io/certificate-arn: "${certificate_arn}"
+                alb.ingress.kubernetes.io/healthcheck-path: "/v1/sys/health"
+                alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS":443}]'
+                alb.ingress.kubernetes.io/success-codes: "200"
+                alb.ingress.kubernetes.io/target-type: "ip"
+                kubernetes.io/ingress.class: "alb"
+              hosts:
+                - host: ${host}
+                  paths: [/]
+              tls:
+                - hosts:
+                  - ${host}
+
+        valueFiles:
+          - $values/argocd/vault/vault-values.yaml
+
+    # Use values from repository
+    - repoURL: 'https://github.com/nhsy-hcp/terraform-aws-eks-argocd.git'
+      targetRevision: dev
+      ref: values
+
+  # Deploy to the vault namespace in same cluster
+  destination:
+    server: "https://kubernetes.default.svc"
+    namespace: vault

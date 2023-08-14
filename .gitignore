@@ -3,7 +3,7 @@
 **/.terraform/*
 **/.terraform.lock.hcl
 **/.terragrunt-cache/*
-.terraform/*
+.terraform
 
 # Local dev files
 .config
@@ -29,4 +29,4 @@ consul-license.yaml*
 consul-admin-cluster.tf
 
 vault-init.json
-files/vault-values.yaml
+argocd/*/*-application.yaml

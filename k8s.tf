@@ -25,9 +25,19 @@ module "vault" {
   ]
 }
 
-resource "local_file" "vault_helm_values" {
-  filename = "${path.root}/files/vault-values.yaml"
-  content = templatefile("${path.root}/files/vault-values-template.yaml",
+resource "local_file" "consul_argocd_application" {
+  filename = "${path.root}/argocd/consul/consul-application.yaml"
+  content = templatefile("${path.root}/templates/consul-application-template.yaml",
+    {
+      alb_group_name  = var.shared_alb_name
+      certificate_arn = aws_acm_certificate.default.arn
+      host            = local.consul_fqdn
+  })
+}
+
+resource "local_file" "vault_argocd_application" {
+  filename = "${path.root}/argocd/vault/vault-application.yaml"
+  content = templatefile("${path.root}/templates/vault-application-template.yaml",
     {
       alb_group_name  = var.shared_alb_name
       certificate_arn = aws_acm_certificate.default.arn

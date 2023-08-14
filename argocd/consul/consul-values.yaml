@@ -1,0 +1,30 @@
+global:
+  name: consul
+  datacenter: dc1
+
+  tls:
+    enabled: true
+
+  peering:
+    enabled: false
+
+  acls:
+    manageSystemACLs: true
+
+connectInject:
+  enabled: false
+
+meshGateway:
+  enabled: false
+
+ui:
+  enabled: true
+  service:
+    enabled: true
+    type: ClusterIP
+#    annotations: | # required for AWS Load Balancer Controller
+#      service.beta.kubernetes.io/aws-load-balancer-name: "eks-consul"
+#      service.beta.kubernetes.io/aws-load-balancer-type: "external"
+#      service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: "ip"
+#      service.beta.kubernetes.io/aws-load-balancer-scheme: "internet-facing"
+
