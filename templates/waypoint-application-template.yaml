@@ -52,7 +52,7 @@ spec:
                   paths: [/]
               tls:
                 - hosts:
-                  - waypoint.${host}
+                  - ${host}
 
 #        valueFiles:
 #          - $values/argocd/vault/vault-values.yaml

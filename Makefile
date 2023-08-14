@@ -1,4 +1,7 @@
-.PHONY: all init apply plan destroy fmt clean destroy-all destroy-k8s uninstall-vault
+.PHONY: all init apply plan destroy fmt clean destroy-all destroy-k8s
+.PHONY: install-consul uninstall-consul
+.PHONY: install-vault uninstall-vault
+.PHONY: install-waypoint uninstall-waypoint
 
 all: apply
 
@@ -21,7 +24,7 @@ destroy-tf: init
 fmt:
 	@terraform fmt -recursive
 
-destroy-k8s: uninstall-vault
+destroy-k8s: uninstall-consul uninstall-vault uninstall-waypoint
 	-@terraform destroy -auto-approve \
 		-target module.argocd \
 		-target module.echoserver \
@@ -46,6 +49,7 @@ uninstall-consul:
 	-@kubectl delete -f argocd/consul/consul-application.yaml
 	-@kubectl delete -f argocd/consul/consul-project.yaml
 	-@kubectl delete pvc -n consul --all
+	-@kubectl delete namespace consul
 
 install-tfe:
 	@kubectl create namespace terraform-enterprise
@@ -57,7 +61,6 @@ uninstall-tfe:
 	-@kubectl delete namespace terraform-enterprise
 
 install-vault:
-#	@helm install vault hashicorp/vault -n vault --create-namespace --values=files/vault-values.yaml
 	@kubectl apply -f argocd/vault/vault-project.yaml
 	@kubectl apply -f argocd/vault/vault-application.yaml
 	@argocd app sync vault
@@ -65,7 +68,6 @@ install-vault:
 	@scripts/10-vault-init.sh
 
 uninstall-vault:
-#	-@helm uninstall vault -n vault
 	-@kubectl delete -f argocd/vault/vault-application.yaml
 	-@kubectl delete -f argocd/vault/vault-project.yaml
 	-@kubectl delete pvc -n vault --all
@@ -74,12 +76,15 @@ install-waypoint:
 	@kubectl apply -f argocd/waypoint/waypoint-project.yaml
 	@kubectl apply -f argocd/waypoint/waypoint-application.yaml
 	@argocd app sync waypoint
+	@kubectl apply -f argocd/waypoint/waypoint-ingress.yaml
 	@scripts/20-waypoint.sh
 
 uninstall-waypoint:
+	-@kubectl delete -f argocd/waypoint/waypoint-ingress.yaml
 	-@kubectl delete -f argocd/waypoint/waypoint-application.yaml
 	-@kubectl delete -f argocd/waypoint/waypoint-project.yaml
 	-@kubectl delete pvc -n waypoint --all
+	-@kubectl delete namespace waypoint
 
 logs-vault:
 	@kubectl logs -n vault vault-0 -c vault -f

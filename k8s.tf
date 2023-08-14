@@ -54,3 +54,13 @@ resource "local_file" "waypoint_argocd_application" {
       host            = local.waypoint_fqdn
   })
 }
+
+resource "local_file" "waypoint_grpc_ingress" {
+  filename = "${path.root}/argocd/waypoint/waypoint-ingress.yaml"
+  content = templatefile("${path.root}/templates/waypoint-ingress-template.yaml",
+    {
+      alb_group_name  = var.shared_alb_name
+      certificate_arn = aws_acm_certificate.default.arn
+      host            = local.waypoint_fqdn
+  })
+}
